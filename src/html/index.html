@@ -35,6 +35,7 @@
       <small class="animated fadeInUp">typed with <i class="fa fa-heart"></i> and <i class="fa fa-coffee"></i> by: <a href="https://alissonjr.github.io" target="_blank">Alisson Jr</a></small>
     </footer>
     <script src="src/js/zipcodenow.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
     function fillData(data) {
 
@@ -58,7 +59,7 @@
       }
     }
       function search(cep) {
-        
+
         document.getElementById('dados').style.display = "block";
         document.getElementById('msg').style.display = "block";
         document.getElementById('msg').innerHTML = "carregando...";
