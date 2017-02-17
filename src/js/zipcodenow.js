@@ -18,7 +18,23 @@ var zipCodeNow = (function () {
 
             var json = JSON.parse(http.response);
 
-            resolve(json);
+            // var wikipedia = "https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + json.localidade;
+            var wikipedia = "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + json.localidade + "&namespace=0&limit=1";
+
+            var http2 = new XMLHttpRequest();
+
+            http2.open("GET", wikipedia, true);
+
+            http2.onreadystatechange = function() {
+              if (http2.status === 200) {
+                json.wikipedia = JSON.parse(http2.response) || "";
+                resolve(json);
+              }
+            }
+
+            http2.send(null);
+
+
 
           } else {
 

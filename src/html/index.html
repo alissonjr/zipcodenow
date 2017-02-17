@@ -21,26 +21,37 @@
       <div class="search">
         <h1 class="search__title animated fadeInDown" id="title_logo">ZipCodeNow!</h1>
         <input type="text" name="" value="" class="form__input animated fadeInUp" onchange="search(this.value);">
-        <div class="city_data">
+        <div class="city__data animated fadeIn" id="dados">
           <ul>
             <li>Cidade: <b id="cidade"></b></li>
             <li>Estado: <b id="uf"></b></li>
-            <li>População: <b id="ibge"></b></li>
-            <li><b id=""></b></li>
+            <li>Sobre: <b id="sobre"></b><br><small>(fonte: <a href="#" target="_blank" id="fonte"></a>)</small></li>
+            <!-- <li>População: <b id="ibge"></b></li> -->
           </ul>
         </div>
       </div>
     </section>
     <footer>
-      <small class="animated fadeInUp">typed with <i class="fa fa-heart"></i> by: <a href="https://alissonjr.github.io">Alisson Jr</a></small>
+      <small class="animated fadeInUp">typed with <i class="fa fa-heart"></i> and <i class="fa fa-coffee"></i> by: <a href="https://alissonjr.github.io" target="_blank">Alisson Jr</a></small>
     </footer>
     <script src="src/js/zipcodenow.js" charset="utf-8"></script>
     <script type="text/javascript">
     function fillData(data) {
-      console.log(data);
-      document.getElementById('cidade').innerHTML = data.localidade;
-      document.getElementById('uf').innerHTML = data.uf;
-      document.getElementById('ibge').innerHTML = data.ibge;
+      if (data) {
+        console.log(data);
+        document.getElementById('dados').style.display = "block";
+
+        document.getElementById('cidade').innerHTML = data.localidade;
+        document.getElementById('uf').innerHTML = data.uf;
+        document.getElementById('sobre').innerHTML = data.wikipedia[2][0];
+        document.getElementById('fonte').innerHTML = data.wikipedia[3][0];
+        document.getElementById('fonte').href = data.wikipedia[3][0];
+        // document.getElementById('ibge').innerHTML = data.ibge;
+      } else {
+
+        document.getElementById('dados').style.display = "none";
+
+      }
     }
       function search(cep) {
         zipCodeNow.find(cep).then(function (res) {
