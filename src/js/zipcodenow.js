@@ -18,21 +18,29 @@ var zipCodeNow = (function () {
 
             var json = JSON.parse(http.response);
 
+
             // var wikipedia = "https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + json.localidade;
-            var wikipedia = "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + json.localidade + "&namespace=0&limit=1";
+            var wikipedia = "https://pt.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + json.localidade + "&namespace=0&limit=1";
 
-            var http2 = new XMLHttpRequest();
 
-            http2.open("GET", wikipedia, true);
+            var http_wiki = new XMLHttpRequest();
 
-            http2.onreadystatechange = function() {
-              if (http2.status === 200) {
-                json.wikipedia = JSON.parse(http2.response) || "";
+            http_wiki.open("GET", wikipedia, true);
+
+            http_wiki.onreadystatechange = function() {
+              if (http_wiki.status === 200) {
+
+                json.wikipedia = {
+                  about: JSON.parse(http_wiki.response)[2][0] || "",
+                  link: JSON.parse(http_wiki.response)[3][0] || ""
+                }
+
                 resolve(json);
+
               }
             }
 
-            http2.send(null);
+            http_wiki.send(null);
 
 
 

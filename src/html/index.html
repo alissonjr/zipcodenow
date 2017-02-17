@@ -22,11 +22,11 @@
         <h1 class="search__title animated fadeInDown" id="title_logo">ZipCodeNow!</h1>
         <input type="text" name="" value="" class="form__input animated fadeInUp" onchange="search(this.value);">
         <div class="city__data animated fadeIn" id="dados">
-          <ul>
+          <span id="msg" style="display: none;">Procurando...</span>
+          <ul id="response" style="display: none;">
             <li>Cidade: <b id="cidade"></b></li>
             <li>Estado: <b id="uf"></b></li>
-            <li>Sobre: <b id="sobre"></b><br><small>(fonte: <a href="#" target="_blank" id="fonte"></a>)</small></li>
-            <!-- <li>População: <b id="ibge"></b></li> -->
+            <li>Sobre: <b id="sobre"></b><br><small>(fonte: <a href="#" target="_blank" id="fonte">Wikipedia</a>)</small></li>
           </ul>
         </div>
       </div>
@@ -37,25 +37,36 @@
     <script src="src/js/zipcodenow.js" charset="utf-8"></script>
     <script type="text/javascript">
     function fillData(data) {
-      if (data) {
-        console.log(data);
-        document.getElementById('dados').style.display = "block";
+
+      if (data.error) {
+
+        document.getElementById('msg').innerHTML = "erro ao carregar os dados";
+        document.getElementById('response').style.display = "none";
+
+      } else {
+
+        document.getElementById('msg').style.display = "none";
+
+        document.getElementById('response').style.display = "block";
 
         document.getElementById('cidade').innerHTML = data.localidade;
         document.getElementById('uf').innerHTML = data.uf;
-        document.getElementById('sobre').innerHTML = data.wikipedia[2][0];
-        document.getElementById('fonte').innerHTML = data.wikipedia[3][0];
-        document.getElementById('fonte').href = data.wikipedia[3][0];
+        document.getElementById('sobre').innerHTML = data.wikipedia.about;
+        document.getElementById('fonte').href = data.wikipedia.link;
         // document.getElementById('ibge').innerHTML = data.ibge;
-      } else {
-
-        document.getElementById('dados').style.display = "none";
 
       }
     }
       function search(cep) {
+        
+        document.getElementById('dados').style.display = "block";
+        document.getElementById('msg').style.display = "block";
+        document.getElementById('msg').innerHTML = "carregando...";
+
         zipCodeNow.find(cep).then(function (res) {
           fillData(res);
+        }, function (res) {
+          fillData({error: "erro"});
         });
       }
     </script>
