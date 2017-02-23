@@ -34,7 +34,7 @@
     <footer>
       <small class="animated fadeInUp">typed with <i class="fa fa-heart"></i> and <i class="fa fa-coffee"></i> by: <a href="https://alissonjr.github.io" target="_blank">Alisson Jr</a></small>
     </footer>
-    <script src="zipcodenow.js" charset="utf-8"></script>
+    <script src="src/js/zipcodenow.js" charset="utf-8"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
     function fillData(data) {
@@ -58,16 +58,18 @@
 
       }
     }
+      function search(cep) {
 
-    function search(cep) {
+        document.getElementById('dados').style.display = "block";
+        document.getElementById('msg').style.display = "block";
+        document.getElementById('msg').innerHTML = "carregando...";
 
-      document.getElementById('dados').style.display = "block";
-      document.getElementById('msg').style.display = "block";
-      document.getElementById('msg').innerHTML = "carregando...";
-
-      fillData(zipCodeNow.find(cep));
-    }
-    
+        zipCodeNow.find(cep).then(function (res) {
+          fillData(res);
+        }, function (res) {
+          fillData({error: "erro"});
+        });
+      }
     </script>
     <script src="src/js/main.js" charset="utf-8"></script>
   </body>

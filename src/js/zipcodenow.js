@@ -14,11 +14,11 @@ let zipCodeNow = (() => {
       fetch(`https://pt.wikipedia.org/w/api.php?action=opensearch&format=json&search=${city_name}&namespace=0&limit=1`).then((response) => {
         if (response.status === 200) {
           response.json().then((data) => {
-            let resposta = {
+            city.wikipedia = {
               about: data[2][0],
               link: data[3][0]
             };
-            resolve(resposta);
+            resolve(city);
           });
         }
       }).catch((error) => {
@@ -29,27 +29,29 @@ let zipCodeNow = (() => {
   }
 
   function cepData(cep) {
-    return new Promise((resolve, reject) => {
 
-      fetch(`//viacep.com.br/ws/${cep}/json/`).then((response) => {
-        if (response.status === 200) {
-          response.json().then((data) => {
-            resolve(data);
-          });
-        } else {
-          reject({error: true});
-        }
-      }).catch((error) => {
-        reject(error);
-      });
-
-    });
   }
 
   return {
 
     find: (cep) => {
-      cepData(cep).then(wikipediaData).then((response) => {return response;});
+      return new Promise((resolve, reject) => {
+
+        fetch(`//viacep.com.br/ws/${cep}/json/`).then((response) => {
+          if (response.status === 200) {
+            response.json().then((data) => {
+              wikipediaData(data).then((res) => {
+                resolve(res);
+              });
+            });
+          } else {
+            reject({error: true});
+          }
+        }).catch((error) => {
+          reject(error);
+        });
+
+      });
     }
 
   };

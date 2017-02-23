@@ -16,11 +16,11 @@ var zipCodeNow = function () {
       fetch("https://pt.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + city_name + "&namespace=0&limit=1").then(function (response) {
         if (response.status === 200) {
           response.json().then(function (data) {
-            var resposta = {
+            city.wikipedia = {
               about: data[2][0],
               link: data[3][0]
             };
-            resolve(resposta);
+            resolve(city);
           });
         }
       }).catch(function (error) {
@@ -29,28 +29,26 @@ var zipCodeNow = function () {
     });
   }
 
-  function cepData(cep) {
-    return new Promise(function (resolve, reject) {
-
-      fetch("//viacep.com.br/ws/" + cep + "/json/").then(function (response) {
-        if (response.status === 200) {
-          response.json().then(function (data) {
-            resolve(data);
-          });
-        } else {
-          reject({ error: true });
-        }
-      }).catch(function (error) {
-        reject(error);
-      });
-    });
-  }
+  function cepData(cep) {}
 
   return {
 
     find: function find(cep) {
-      cepData(cep).then(wikipediaData).then(function (response) {
-        return response;
+      return new Promise(function (resolve, reject) {
+
+        fetch("//viacep.com.br/ws/" + cep + "/json/").then(function (response) {
+          if (response.status === 200) {
+            response.json().then(function (data) {
+              wikipediaData(data).then(function (res) {
+                resolve(res);
+              });
+            });
+          } else {
+            reject({ error: true });
+          }
+        }).catch(function (error) {
+          reject(error);
+        });
       });
     }
 
