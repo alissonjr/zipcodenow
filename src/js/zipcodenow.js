@@ -1,66 +1,55 @@
-var zipCodeNow = (function () {
+/**
+  @author Alisson Costa de Oliveira Júnior <alisson.coj@hotmail.com>
+  @desc Buscador de dados de uma localidade a partir do zipcode
+*/
+let zipCodeNow = (() => {
+
+  /**
+  * @desc faz a pesquisa sobre a cidade junto ao wikipedia
+  * @param {String} city_name - nome da cidade a ser pesquisada
+  */
+  function wikipediaData(city) {
+    let city_name = city.localidade;
+    return new Promise((resolve, reject) => {
+      fetch(`https://pt.wikipedia.org/w/api.php?action=opensearch&format=json&search=${city_name}&namespace=0&limit=1`).then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            let resposta = {
+              about: data[2][0],
+              link: data[3][0]
+            };
+            resolve(resposta);
+          });
+        }
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+
+  }
+
+  function cepData(cep) {
+    return new Promise((resolve, reject) => {
+
+      fetch(`//viacep.com.br/ws/${cep}/json/`).then((response) => {
+        if (response.status === 200) {
+          response.json().then((data) => {
+            resolve(data);
+          });
+        } else {
+          reject({error: true});
+        }
+      }).catch((error) => {
+        reject(error);
+      });
+
+    });
+  }
 
   return {
 
-    find: function (cep) {
-
-      return new Promise(function (resolve, reject) {
-
-        var http = new XMLHttpRequest();
-
-        var url = "//viacep.com.br/ws/" + cep + "/json/";
-
-        http.open("GET", url, true);
-
-
-        http.onreadystatechange = function() { //Call a function when the state changes.
-
-          if (http.status === 200) {
-
-            var json = JSON.parse(http.response);
-
-
-            // var wikipedia = "https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=" + json.localidade;
-            var wikipedia = "https://pt.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + json.localidade + "&namespace=0&limit=1";
-
-            var http_wiki = new XMLHttpRequest();
-
-            http_wiki.open("GET", wikipedia, true);
-
-            http_wiki.setRequestHeader('Access-Control-Allow-Origin', '*');
-
-            http_wiki.onreadystatechange = function() {
-              if (http_wiki.status === 200) {
-
-                json.wikipedia = {
-                  about: JSON.parse(http_wiki.response)[2][0] || "",
-                  link: JSON.parse(http_wiki.response)[3][0] || ""
-                };
-
-                resolve(json);
-
-              } else {
-
-                resolve(json);
-
-              }
-            };
-
-            http_wiki.send(null);
-
-
-
-          } else {
-
-            reject(http);
-
-          }
-        };
-
-        http.send(null);
-
-      });
-
+    find: (cep) => {
+      cepData(cep).then(wikipediaData).then((response) => {return response;});
     }
 
   };
