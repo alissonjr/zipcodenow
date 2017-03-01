@@ -28,7 +28,7 @@
   */
   function changeElementFont(element, font){
 
-    document.getElementById(element).style.fontFamily = font;
+    document.querySelector(element).style.fontFamily = font;
 
   }
 
@@ -37,9 +37,9 @@
   * @param {String} element
   * @param {String} color
   */
-  function changeElementColor(element, color){
+  function changeElementBackground(element, color){
 
-    document.getElementById(element).style.color = color;
+    document.querySelector(element).style.background = color;
 
   }
 
@@ -51,14 +51,14 @@
 
     var default_color = colors[step_color_index];
 
-    changeElementColor('title_logo', default_color);
+    changeElementBackground('body', default_color);
 
     // /////////////////////
 
     // innit font setings
     var step_font_index = Math.floor(Math.random() * fonts.length);
 
-    changeElementFont('title_logo', fonts[step_font_index]);
+    changeElementFont('#title_logo', fonts[step_font_index]);
 
 
   }

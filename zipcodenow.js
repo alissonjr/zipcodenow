@@ -11,10 +11,11 @@ var zipCodeNow = function () {
   * @param {String} city_name - nome da cidade a ser pesquisada
   */
   function wikipediaData(city) {
-    var city_name = city.localidade;
     return new Promise(function (resolve, reject) {
+      var city_name = city.localidade;
       fetch("https://pt.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + city_name + "&namespace=0&limit=1").then(function (response) {
         if (response.status === 200) {
+          console.log(response);
           response.json().then(function (data) {
             city.wikipedia = {
               about: data[2][0],
@@ -22,6 +23,28 @@ var zipCodeNow = function () {
             };
             resolve(city);
           });
+        } else {
+          resolve(city);
+        }
+      }).catch(function () {
+        resolve(city);
+      });
+    });
+  }
+
+  /**
+  * @desc faz a pesquisa sobre a cidade junto ao wikipedia
+  * @param {String} city_name - nome da cidade a ser pesquisada
+  */
+  function cepData(cep) {
+    return new Promise(function (resolve, reject) {
+      fetch("//viacep.com.br/ws/" + cep + "/json/").then(function (response) {
+        if (response.status === 200) {
+          response.json().then(function (data) {
+            resolve(data);
+          });
+        } else {
+          reject({ error: true });
         }
       }).catch(function (error) {
         reject(error);
@@ -29,26 +52,11 @@ var zipCodeNow = function () {
     });
   }
 
-  function cepData(cep) {}
-
   return {
 
     find: function find(cep) {
-      return new Promise(function (resolve, reject) {
-
-        fetch("//viacep.com.br/ws/" + cep + "/json/").then(function (response) {
-          if (response.status === 200) {
-            response.json().then(function (data) {
-              wikipediaData(data).then(function (res) {
-                resolve(res);
-              });
-            });
-          } else {
-            reject({ error: true });
-          }
-        }).catch(function (error) {
-          reject(error);
-        });
+      return cepData(cep).then(wikipediaData).then(function (response) {
+        return response;
       });
     }
 

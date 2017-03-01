@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" media="screen" title="no title">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
-  <body>
+  <body id="body">
     <header>
     </header>
     <section class="content">
@@ -24,9 +24,11 @@
         <div class="city__data animated fadeIn" id="dados">
           <span id="msg" style="display: none;">Procurando...</span>
           <ul id="response" style="display: none;">
+            <li>Rua: <b id="logradouro"></b></li>
+            <li>Bairro: <b id="bairro"></b></li>
             <li>Cidade: <b id="cidade"></b></li>
             <li>Estado: <b id="uf"></b></li>
-            <li>Sobre: <b id="sobre"></b><br><small>(fonte: <a href="#" target="_blank" id="fonte">Wikipedia</a>)</small></li>
+            <li id="wikipedia_data">Sobre: <b id="sobre"></b><br><small>(fonte: <a href="#" target="_blank" id="fonte">Wikipedia</a>)</small></li>
           </ul>
         </div>
       </div>
@@ -37,27 +39,34 @@
     <script src="src/js/zipcodenow.js" charset="utf-8"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
-    function fillData(data) {
+      function fillData(data) {
 
-      if (data.error) {
+        if (data.error) {
 
-        document.getElementById('msg').innerHTML = "erro ao carregar os dados";
-        document.getElementById('response').style.display = "none";
+          document.getElementById('msg').innerHTML = "erro ao carregar os dados";
+          document.getElementById('response').style.display = "none";
 
-      } else {
+        } else {
 
-        document.getElementById('msg').style.display = "none";
+          document.getElementById('msg').style.display = "none";
 
-        document.getElementById('response').style.display = "block";
+          document.getElementById('response').style.display = "block";
 
-        document.getElementById('cidade').innerHTML = data.localidade;
-        document.getElementById('uf').innerHTML = data.uf;
-        document.getElementById('sobre').innerHTML = data.wikipedia.about;
-        document.getElementById('fonte').href = data.wikipedia.link;
-        // document.getElementById('ibge').innerHTML = data.ibge;
+          document.getElementById('logradouro').innerHTML = data.logradouro || "não informado";
+          document.getElementById('bairro').innerHTML = data.bairro || "não informado";
+          document.getElementById('cidade').innerHTML = data.localidade;
+          document.getElementById('uf').innerHTML = data.uf;
 
+          if (data.wikipedia) {
+            document.getElementById('sobre').innerHTML = data.wikipedia.about;
+            document.getElementById('fonte').href = data.wikipedia.link;
+          } else {
+            document.getElementById('wikipedia_data').style.display = 'none';
+          }
+          // document.getElementById('ibge').innerHTML = data.ibge;
+
+        }
       }
-    }
       function search(cep) {
 
         document.getElementById('dados').style.display = "block";
